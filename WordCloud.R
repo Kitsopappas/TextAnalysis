@@ -1,3 +1,26 @@
+#__auth = Pappas Xristodoulos
+#   Ionian University 2015
+
+#     R version 3.2.0
+
+#Reads a txt file from the web and does a ritual cleanning
+#then finds every words frequency in a document
+#and creates a word cloud a bar chart and a dot plot
+
+#-------Sample output of the project-------
+          #           word freq
+          #said       said  659
+          #one         one  414
+          #lorry     lorry  321
+          #upon       upon  286
+          #will       will  269
+          #defarge defarge  268
+          #man         man  264
+          #little   little  263
+          #time       time  246
+          #hand       hand  240
+#------------------------------------------
+
 # Install
 #install.packages("tm")  # for text mining
 #install.package("SnowballC") # for text stemming
@@ -5,13 +28,15 @@
 #install.packages("RColorBrewer") # color palettes
 #install.packages("ggplot2") #awesome plots
 
-
+ 
 # Load
 library("tm")
 library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 library("ggplot2")
+
+cat(sprintf("I will do some cleanning now... wait!"))
 
 # Read the text file
 filePath <- "https://raw.githubusercontent.com/Kitsopappas/TextAnalysis/master/sample.txt"
@@ -56,21 +81,24 @@ v <- sort(rowSums(m),decreasing=TRUE)
 d <- data.frame(word = names(v),freq=v)
 head(d, 10)
 
+
+cat(sprintf("Wait for it!"))
 #export word cloud
 set.seed(1234)
 wordcloud(words = d$word, freq = d$freq, min.freq = 1,
           max.words=200, random.order=FALSE, rot.per=0.35, 
           colors=brewer.pal(8, "Dark2"))
-
+cat(sprintf("There is a word cloud. Awesome uh??"))
 
 # bar plot 10 λέξεων
 findFreqTerms(dtm, lowfreq = 4)
 findAssocs(dtm, terms = "freedom", corlimit = 0.3)
 
 barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
-        col ="lightblue", main ="Most frequent words",
+        col ="cadetblue4", main ="Most frequent words",
         ylab = "Word frequencies")
 
 # dot plot 10 λέξεων
-qplot(d[1:10,]$freq,d[1:10,]$word,data=d)
+qplot(d[1:10,]$word,d[1:10,]$freq,data=d,color=d[1:10,]$freq,
+      main="Most frequent words dot",xlab = "Words", ylab="Frequency")
 
