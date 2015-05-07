@@ -7,19 +7,20 @@
 #then finds every words frequency in a document
 #and creates a word cloud a bar chart and a dot plot
 
-#-------Sample output of the project-------
-          #           word freq
-          #said       said  659
-          #one         one  414
-          #lorry     lorry  321
-          #upon       upon  286
-          #will       will  269
-          #defarge defarge  268
-          #man         man  264
-          #little   little  263
-          #time       time  246
-          #hand       hand  240
-#------------------------------------------
+#--------------Sample output of the project--------------
+          #           word  | freq          #
+                      -----  -----
+#          said    |    said  | 659                     #
+#          one     |     one  | 414                     #
+#          lorry   |   lorry  | 321                     #  
+#          upon    |    upon  | 286                     #  
+#          will    |    will  | 269                     #
+#          defarge | defarge  | 268                     #
+#          man     |     man  | 264                     #
+#          little  |  little  | 263                     #
+#          time    |    time  | 246                     #
+#          hand    |    hand  | 240                     #
+#--------------------------------------------------------
 
 # Install
 #install.packages("tm")  # for text mining
