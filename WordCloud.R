@@ -3,6 +3,7 @@
 #install.package("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
+#install.packages("ggplot2")
 
 
 # Load
@@ -10,9 +11,10 @@ library("tm")
 library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
+library("ggplot2")
 
 # Read the text file
-filePath <- ""
+filePath <- "https://raw.githubusercontent.com/Kitsopappas/TextAnalysis/master/sample.txt"
 text <- readLines(filePath)
 
 # Load the data as a corpus
@@ -60,4 +62,14 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
           max.words=200, random.order=FALSE, rot.per=0.35, 
           colors=brewer.pal(8, "Dark2"))
 
+
+
+findFreqTerms(dtm, lowfreq = 4)
+findAssocs(dtm, terms = "freedom", corlimit = 0.3)
+
+barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
+        col ="lightblue", main ="Most frequent words",
+        ylab = "Word frequencies")
+
+qplot(d[1:10,]$freq,d[1:10,]$word,data=d)
 
