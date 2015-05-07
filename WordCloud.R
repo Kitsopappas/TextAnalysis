@@ -3,7 +3,7 @@
 #install.package("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
-#install.packages("ggplot2")
+#install.packages("ggplot2") #awesome plots
 
 
 # Load
@@ -17,7 +17,7 @@ library("ggplot2")
 filePath <- "https://raw.githubusercontent.com/Kitsopappas/TextAnalysis/master/sample.txt"
 text <- readLines(filePath)
 
-# Load the data as a corpus
+# μετατροπή δεδομένων σε corpus για text analysis
 docs <- Corpus(VectorSource(text))
 
 inspect(docs)
@@ -27,26 +27,26 @@ docs <- tm_map(docs, toSpace, "/")
 docs <- tm_map(docs, toSpace, "@")
 docs <- tm_map(docs, toSpace, "\\|")
 
-# Convert the text to lower case
+# μετατροπή του κειμένου σε lowercase
 docs <- tm_map(docs, content_transformer(tolower))
 
-# Remove numbers
+# Διαγραφή αριθμών
 docs <- tm_map(docs, removeNumbers)
 
-# Remove english common stopwords
+# Διαγραφή stopwords
 docs <- tm_map(docs, removeWords, stopwords("english"))
 
-# Remove your own stop word
+# Διαγραφή άχρηστων χαρακτήρων λόγω κωδικοποίησης
 # specify your stopwords as a character vector
-docs <- tm_map(docs, removeWords, c("blabla1", "blabla2")) 
+#docs <- tm_map(docs, removeWords, c("", "","")) 
 
-# Remove punctuations
+# Διαγραφή !/./?/, γενικά τέτοια
 docs <- tm_map(docs, removePunctuation)
 
-# Eliminate extra white spaces
+# Μείωση του κενού χώρου
 docs <- tm_map(docs, stripWhitespace)
 
-# Text stemming
+
 # docs <- tm_map(docs, stemDocument)
 
 # word frequencies
@@ -63,7 +63,7 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
           colors=brewer.pal(8, "Dark2"))
 
 
-
+# bar plot 10 λέξεων
 findFreqTerms(dtm, lowfreq = 4)
 findAssocs(dtm, terms = "freedom", corlimit = 0.3)
 
@@ -71,5 +71,6 @@ barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
         col ="lightblue", main ="Most frequent words",
         ylab = "Word frequencies")
 
+# dot plot 10 λέξεων
 qplot(d[1:10,]$freq,d[1:10,]$word,data=d)
 
