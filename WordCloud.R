@@ -28,6 +28,7 @@
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
 #install.packages("ggplot2") #awesome plots
+#install.packages("NbClust")
 
  
 # Load
@@ -36,6 +37,7 @@ library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 library("ggplot2")
+library("NbClust")
 
 cat(sprintf("I will do some cleanning now... wait!"))
 
@@ -102,4 +104,28 @@ barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
 # dot plot 10 λέξεων
 qplot(d[1:10,]$word,d[1:10,]$freq,data=d,color=d[1:10,]$freq,
       main="Most frequent words dot",xlab = "Words", ylab="Frequency")
+
+#-----------------k-means-----------------
+### don't forget to normalize the vectors so Euclidean makes sense
+norm_eucl <- function(m) m/apply(m, MARGIN=1, FUN=function(x) sum(x^2)^.5)
+m_norm <- norm_eucl(m)
+
+
+### cluster into 10 clusters
+cl <- kmeans(m_norm, 10)
+table(cl$cluster)
+
+
+barplot(table(cl$cluster),
+        main="Number of Clusters")
+
+#---------------------FUNCTIONS----------------------
+
+wssplot <- function(data, nc=15, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")}
 

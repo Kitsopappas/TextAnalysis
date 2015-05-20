@@ -4,6 +4,7 @@ install.packages("SnowballC") # for text stemming
 install.packages("wordcloud") # word-cloud generator 
 install.packages("RColorBrewer") # color palettes
 install.packages("XML")#get and clean data from web site
+install.packages("RCurl")
 
 # Load
 library("tm")
@@ -11,39 +12,57 @@ library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 library("XML")
+library("RCurl")
 
-text.page <- readHTML("http://di.ionio.gr/el/")
+con = url("http://di.ionio.gr/")
+txt = readLines(con)
+close(con)
+
+# convert HTML to text
+txt <- lapply(txt, htmlToText)
+
+txt <- sapply(txt, function(x) iconv(x, "latin1", "ASCII", sub=""))
+
+txt <- gsub("<.*?>", "", txt)
+txt <- gsub("<(script|style).+?</(script|style)>", "", txt)
+txt <- gsub("<(?:\"[^\"]*\"[\'\"]*|\'[^\']*\'[\'\"]*|[^\'\">])+>", "", txt)
+txt <- gsub("\t", "", txt)
+
+#text.page <- readHTML("http://edition.cnn.com/")
+
+# make corpus for text mining
+corpus <- Corpus(txt)
 
 #clean the text from crap
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
-text.page <- tm_map(text.page, "", "/")
-text.page <- tm_map(text.page, "", "@")
-text.page <- tm_map(text.page, "", "\\|")
+txt <- tm_map(txt, "", "/")
+txt <- tm_map(txt, "", "@")
+txt <- tm_map(txt, "", "\\|")
 
 # Convert the text to lower case
-text.page <- tm_map(text.page, content_transformer(tolower))
+txt <- tm_map(txt, content_transformer(tolower))
 
 # Remove numbers
-text.page <- tm_map(text.page, removeNumbers)
+txt <- tm_map(txt, removeNumbers)
 
 # Remove english common stopwords
-text.page <- tm_map(text.page, removeWords, stopwords("english"))
+txt <- tm_map(txt, removeWords, stopwords("english"))
 
 # Remove your own stop word
 # specify your stopwords as a character vector
-text.page <- tm_map(text.page, removeWords, c("\t", "www")) 
+txt <- tm_map(txt, removeWords, c("\t", "www")) 
 
 # Remove punctuations
-text.page <- tm_map(text.page, removePunctuation)
+txt <- tm_map(txt, removePunctuation)
 
 # Eliminate extra white spaces
-text.page <- tm_map(text.page, stripWhitespace)
+txt <- tm_map(txt, stripWhitespace)
 
-text.page <- TermDocumentMatrix(text.page)
+txt <- TermDocumentMatrix(txt)
 
 
 
-dtm <- TermDocumentMatrix(text.page)
+dtm <- TermDocumentMatrix(txt)
 m <- as.matrix(dtm)
 v <- sort(rowSums(m),decreasing=TRUE)
 data.txt <- data.frame(word = names(v),freq=v)
